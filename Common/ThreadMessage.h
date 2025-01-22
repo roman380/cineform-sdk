@@ -43,7 +43,7 @@ public:
 
 	int GetNextNumber()
 	{
-		CAutoLock lock(mutex);
+		cf::CAutoLock lock(mutex);
 
 		counter++;
 		int number = counter;

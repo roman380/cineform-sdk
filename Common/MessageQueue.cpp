@@ -52,7 +52,7 @@ CFHD_Error
 MessageQueue<MessageType>::AddMessage(const MessageType &message)
 {
 	// Lock access to the message queue
-	CAutoLock lock(&m_queueMutex);
+	cf::CAutoLock lock(&m_queueMutex);
 
 	//fprintf(stderr, "Posting new message\n");
 
@@ -84,7 +84,7 @@ MessageQueue<MessageType>::WaitForMessage(MessageType &message)
 	}
 
 	// Lock access to the message queue
-	CAutoLock lock(&m_queueMutex);
+	cf::CAutoLock lock(&m_queueMutex);
 
 	// There should be at least one message in the queue
 	ASSERT(Length() > 0);

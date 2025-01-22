@@ -20,7 +20,6 @@
 */
 #pragma once
 
-
 /*!
 	@brief Simple lock for controlling access to a critical section
 
@@ -98,6 +97,8 @@ private:
 
 #endif
 
+namespace cf
+{ 
 
 /*!
 	@brief Lock access to a critical section with automatic unlocking
@@ -137,3 +138,5 @@ private:
 	CSimpleLock *m_lock;
 	
 };
+
+} // namespace cf

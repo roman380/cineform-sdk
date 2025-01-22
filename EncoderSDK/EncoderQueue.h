@@ -311,7 +311,7 @@ public:
 	CFHD_Error AddEncoderJob(EncoderJob *job)
 	{
 		// Available space in the encoder job queue?
-		CAutoLock lock(mutex);
+		cf::CAutoLock lock(mutex);
 		while (available == 0)
 		{
 			// Wait until there is space in the queue
@@ -331,7 +331,7 @@ public:
 	EncoderJob *WaitForFinishedJob()
 	{
 		// Has the next encoding job in the queue finished?
-		CAutoLock lock(mutex);
+		cf::CAutoLock lock(mutex);
 		EncoderJob *job = queue.size() > 0 ? queue.front() : NULL;
 		while (job == NULL || job->status != ENCODER_JOB_STATUS_FINISHED)
 		{
@@ -354,7 +354,7 @@ public:
 	EncoderJob *TestForFinishedJob()
 	{
 		// Has the next encoding job in the queue finished?
-		CAutoLock lock(mutex);
+		cf::CAutoLock lock(mutex);
 		EncoderJob *job = queue.size() > 0 ? queue.front() : NULL;
 		if (job == NULL || job->status != ENCODER_JOB_STATUS_FINISHED) {
 			return NULL;

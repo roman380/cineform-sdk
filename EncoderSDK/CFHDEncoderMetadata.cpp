@@ -236,7 +236,7 @@ CFHD_MetadataAdd(CFHD_MetadataRef metadataRef,
 	assert(ctype);
 
 	//Lock(&metadata->m_lock);
-	CAutoLock lock(metadata->m_lock);
+	cf::CAutoLock lock(metadata->m_lock);
 
 	metadata->m_metadataChanged = true;
 	
@@ -359,7 +359,7 @@ CFHD_MetadataAttach(CFHD_EncoderRef encoderRef, CFHD_MetadataRef metadataRef)
 	}
 
 	// Need exclusive access to the metadata for the rest of this routine
-	CAutoLock lock(metadata->m_lock);
+	cf::CAutoLock lock(metadata->m_lock);
 
 	if (metadata->m_metadataChanged)
 	{
