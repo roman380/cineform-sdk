@@ -146,6 +146,9 @@ typedef enum CFHD_PixelFormat
 	CFHD_PIXEL_FORMAT_B48R = FOUR_CHAR_CODE('b','4','8','r'),	// RGB 16-bits per component
 	CFHD_PIXEL_FORMAT_RG64 = FOUR_CHAR_CODE('R','G','6','4'),	// 16-bit RGBA CFHD format
 
+	CFHD_PIXEL_FORMAT_BGR3 = FOUR_CHAR_CODE('B','G','R','3'),	// 8-bit BGRx
+	CFHD_PIXEL_FORMAT_BGR6 = FOUR_CHAR_CODE('B','G','R','6'),	// 16-bit BGRx
+
 	// Avid pixel formats
 	CFHD_PIXEL_FORMAT_CT_UCHAR =       FOUR_CHAR_CODE('a','v','u','8'),	// Avid 8-bit CbYCrY 4:2:2 (no alpha)
 	CFHD_PIXEL_FORMAT_CT_10BIT_2_8 =   FOUR_CHAR_CODE('a','v','2','8'),	// Two planes of 8-bit and 2-bit pixels

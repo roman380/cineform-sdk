@@ -561,6 +561,7 @@ CSampleEncoder::EncodeSample(void *frameBuffer,
 	if (! (colorFormat != COLOR_FORMAT_UNKNOWN)) {
 		return CFHD_ERROR_BADFORMAT;
 	}
+	auto const bFirst = m_inputFormat == CFHD_PIXEL_FORMAT_BGR3 || CFHD_PIXEL_FORMAT_BGR6; // Windows formats have BGR order, not RGB
 
 	try
 	{
@@ -569,7 +570,7 @@ CSampleEncoder::EncodeSample(void *frameBuffer,
 		//		m_inputWidth, m_inputHeight, framePitch, colorFormat, m_channelCount, m_inputFormat);
 		// Call the routine in the codec library to encode the sample
 		result = ::EncodeSample(m_encoder, (uint8_t *)frameBuffer, m_inputWidth, m_inputHeight, framePitch,
-								colorFormat, m_transformArray, m_channelCount, &bitstream,
+								colorFormat, bFirst, m_transformArray, m_channelCount, &bitstream,
 								(PIXEL *)m_scratchBuffer, m_scratchBufferSize, fixedQuality, fixedBitrate,
 								NULL, m_frameRate, NULL);
 	}
@@ -604,6 +605,7 @@ COLOR_FORMAT CSampleEncoder::EncoderColorFormat(CFHD_PixelFormat pixelFormat)
 	switch (pixelFormat)
 	{
 	case CFHD_PIXEL_FORMAT_BGRA:
+	case CFHD_PIXEL_FORMAT_BGR3:
 		colorFormat = COLOR_FORMAT_BGRA;		// BGRA
 		break;
 			
@@ -648,6 +650,7 @@ COLOR_FORMAT CSampleEncoder::EncoderColorFormat(CFHD_PixelFormat pixelFormat)
 		break;
 
 	case CFHD_PIXEL_FORMAT_B64A:
+	case CFHD_PIXEL_FORMAT_BGR6:
 		colorFormat = COLOR_FORMAT_B64A;		// b64a
 		break;
 

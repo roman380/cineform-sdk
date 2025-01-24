@@ -517,7 +517,7 @@ bool EncodeInit(ENCODER *encoder, TRANSFORM *transform[], int num_channels,
 void EncodeRelease(ENCODER *encoder, TRANSFORM *transform[], int num_transforms, BITSTREAM *output);
 
 // Encode one frame of video
-bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pitch, int format,
+bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pitch, int format, int b_first,
 				  TRANSFORM *transform[], int num_transforms, BITSTREAM *output,
 				  PIXEL *buffer, size_t buffer_size, int fixedquality, int fixedbitrate,
 				  uint8_t* pPreviewBuffer, float framerate, custom_quant *custom);

@@ -1894,7 +1894,7 @@ bool EncodeSampleOld(ENCODER *encoder, LPBYTE data, int width, int height, int p
 					 PIXEL *buffer, size_t buffer_size, int i_fixedquality, int fixedbitrate,
 					 uint8_t* pPreviewBuffer, float framerate, custom_quant *custom)
 #else
-bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pitch, int format,
+bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pitch, int format, int b_first,
 				  TRANSFORM *transform[], int num_transforms, BITSTREAM *output,
 				  PIXEL *buffer, size_t buffer_size, int i_fixedquality, int fixedbitrate,
 				  uint8_t* pPreviewBuffer, float framerate, custom_quant *custom)
@@ -1953,12 +1953,13 @@ bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pi
 	frame = encoder->frame;
 	assert(frame != NULL);
 
-
+#if 0 // Let the caller decide this
 	if(pitch < 0) 
 	{		
 		data += (display_height - 1) * pitch;
 		pitch = -pitch;
 	}
+#endif
 
 #if DEBUG && 0
 	{
@@ -2075,10 +2076,12 @@ bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pi
 
 	if(encoder->video_channels <= 1 && encoder->ignore_database == 0 && encoder->ignore_overrides == 0) // not doing a double high encode
 	{
+		#if 0 // Check disk???
 		OverrideEncoderSettings(encoder); // psuedo 3D encoding, and encoder override.
 										  //
 										  //	Patch this to only do single channel encode when FCP starts up
 										  //
+		#endif
 		encoder->ignore_overrides = 0; // need to reset, as in may be accidientally sety within UpdateEncoderOverrides. 
 									// The ignore_overrides flag in only to be used is set from global or local, to override 
 									// read of the disk based override.colr file. 
@@ -2395,11 +2398,19 @@ bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pi
 	case COLOR_FORMAT_BGRA:				// QuickTime 'BGRA' with 8 bits per component
 	case COLOR_FORMAT_RGB32:
 	case COLOR_FORMAT_RGB32_INVERTED:
+#if 0 // Let the caller decide? COLOR_FORMAT_RGB32_INVERTED makes no sense...
 		if(origformat == COLOR_FORMAT_RGB32_INVERTED || origformat == COLOR_FORMAT_QT32)
 		{
 			data += (display_height - 1) * pitch;
 			pitch = -pitch;
 		}
+#endif
+
+		assert(b_first);
+		assert(origformat == COLOR_FORMAT_BGRA);
+		assert(encoded_format == ENCODED_FORMAT_RGB_444);
+		// WARN: See similar comment in COLOR_FORMAT_B64A section; here we don't patch ConvertRGBAtoRGB48, rgbaswap update makes it right
+		rgbaswap = 1;
 
 		if(encoded_format == ENCODED_FORMAT_RGB_444)
 		{
@@ -2482,13 +2493,17 @@ bool EncodeSample(ENCODER *encoder, uint8_t *data, int width, int height, int pi
 		break;
 
 	case COLOR_FORMAT_B64A: // now allowed in AHD foir AE support
-		
+
+		assert(b_first);
+		assert(encoded_format == ENCODED_FORMAT_RGB_444);
+		// WARN: See ConvertBGRA64ToFrame_4444_16s inside and the patch which reorders pixel order to accept Windows BGRA instead of assumed ARGB
+
 		if(encoded_format == ENCODED_FORMAT_RGB_444)
 		{
 			// Convert to three planes of RGB with 4:4:4 sampling and 12 bit precision
 			codec->precision = CODEC_PRECISION_12BIT;
 			//Does alpha range tweak
-			ConvertBGRA64ToFrame_4444_16s(data, pitch, frame, (uint8_t *)buffer, codec->precision);
+			ConvertBGRA64ToFrame_4444_16s(data, pitch, frame, (uint8_t *)buffer, codec->precision); // ARGB input layout
 		}
 		else if(encoded_format == ENCODED_FORMAT_RGBA_4444)
 		{

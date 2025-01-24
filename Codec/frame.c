@@ -6681,10 +6681,18 @@ CODEC_ERROR ConvertBGRA64ToFrame_4444_16s(uint8_t *data, int pitch, FRAME *frame
 			int r, g, b, a;
 
 			// Load the first set of ARGB values
+#if 1
+			// HOTFIX: Instead of cloning for BGRA code path, let's just patch here inplace...
+			b = *(rgb_ptr++);
+			g = *(rgb_ptr++);
+			r = *(rgb_ptr++);
+			a = *(rgb_ptr++);
+#else
 			a = *(rgb_ptr++);
 			r = *(rgb_ptr++);
 			g = *(rgb_ptr++);
 			b = *(rgb_ptr++);
+#endif
 
 			// Shift the 16-bit pixels to the encoded precision
 			*(r_ptr++) = r >> shift;
