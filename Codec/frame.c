@@ -6560,6 +6560,7 @@ void ConvertRGBAtoRGBA64(uint8_t *data, int pitch, FRAME *frame, uint8_t *buffer
 	}
 }
 
+extern bool ConvertBGRA64ToFrame_4444_16s__BGR_Shift4(int h, int w, uint16_t* bgra, int bgrap, uint16_t* b, int bp, uint16_t* g, int gp, uint16_t* r, int rp);
 
 /*
 	Convert QuickTime format b64a to a frame of planar RGBA.
@@ -6654,6 +6655,12 @@ CODEC_ERROR ConvertBGRA64ToFrame_4444_16s(uint8_t *data, int pitch, FRAME *frame
 	if (alpha_flag)
 	{
 		a_row_ptr = (uint8_t *)color_plane[3];	a_row_pitch = color_pitch[3];
+	}
+
+	if(!alpha_flag && shift == 4 && (frame_width % 4 == 0))
+	{
+		if(ConvertBGRA64ToFrame_4444_16s__BGR_Shift4(display_height, frame_width, (PIXEL16U*) rgb_row_ptr, rgb_row_pitch, (PIXEL16U*) b_row_ptr, b_row_pitch, (PIXEL16U*) g_row_ptr, g_row_pitch, (PIXEL16U*) r_row_ptr, r_row_pitch))
+			return CODEC_ERROR_OKAY;
 	}
 
 	for (row = 0; row < display_height; row++)
