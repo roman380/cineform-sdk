@@ -357,7 +357,7 @@ pixelSize = 3;
 break;
 
 default:
-throw CFHD_ERROR_BADFORMAT;
+assert(false); //throw CFHD_ERROR_BADFORMAT;
 break;
 }
 

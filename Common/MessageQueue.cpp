@@ -89,7 +89,7 @@ MessageQueue<MessageType>::WaitForMessage(MessageType &message)
 	// There should be at least one message in the queue
 	ASSERT(Length() > 0);
 	if (! (Length() > 0)) {
-		fprintf(stderr, "Message queue length not positive: %ld\n", Length());
+		fprintf(stderr, "Message queue length not positive: %zd\n", Length());
 	}
 
 	// Remove the first message from the queue
